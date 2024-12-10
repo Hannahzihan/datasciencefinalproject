@@ -1,0 +1,117 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+develop-eggs/
+.installed.cfg
+*.egg-info/
+pip-wheel-metadata/
+*.manifest
+*.spec
+
+# Python environment files
+env/
+venv/
+ENV/
+.venv/
+.Python
+.python-version
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Translations
+*.mo
+*.pot
+
+# Django/Flask-related files
+*.log
+local_settings.py
+instance/
+.webassets-cache/
+
+# Scrapy-related files
+.scrapy/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Sphinx documentation
+docs/_build/
+docs/api/
+
+# PyBuilder
+target/
+
+# SageMath
+*.sage.py
+
+# dotenv
+.env
+
+# celery
+celerybeat-schedule
+
+# mypy
+.mypy_cache/
+
+# IDE and editor files
+/.idea/
+.vscode/
+*.swp
+*~
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs
+/site
+
+# SQLite database
+*.sqlite
+
+# CSV or data files
+*.csv
+*.tsv
+
+# Machine Learning
+mlruns/
+private_*
+
+# Experiment outputs
+private_*
+
+# Others
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

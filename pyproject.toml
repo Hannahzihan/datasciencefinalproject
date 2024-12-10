@@ -2,7 +2,9 @@
 requires = ['setuptools', 'setuptools-scm', 'wheel']
 
 [tool.setuptools_scm]
-version_scheme = "post-release"
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
+write_to = "src/_version.py"
 
 [tool.black]
 exclude = '''
