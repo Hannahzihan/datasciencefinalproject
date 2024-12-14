@@ -2,53 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def plot_categorical_distributions(df, categorical_features):
-    """
-    Plot subplots for categorical features showing their distributions, with counts displayed on the bars.
-
-    Parameters:
-        df (pd.DataFrame): DataFrame containing the categorical variables.
-        categorical_features (list): List of column names for the categorical variables.
-    """
-    # Define the number of rows and columns for the subplots
-    num_features = len(categorical_features)
-    cols = 3  # Number of columns in the subplot grid
-    rows = (num_features // cols) + (num_features % cols > 0)  # Calculate rows needed
-    
-    # Create the subplot grid
-    fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
-    axes = axes.flatten()  # Flatten the axes array for easier iteration
-
-    # Plot each categorical feature
-    for i, feature in enumerate(categorical_features):
-        ax = sns.countplot(data=df, x=feature, hue=feature, palette="Set2", ax=axes[i], legend=False)
-        axes[i].set_title(f"Distribution of {feature}", fontsize=12)
-        axes[i].set_xlabel(feature, fontsize=10)
-        axes[i].set_ylabel("Count", fontsize=10)
-        axes[i].tick_params(axis='x', rotation=45)
-
-        # Add count labels on each bar
-        for patch in ax.patches:
-            height = patch.get_height()  # Get the height of the bar
-            if height > 0:
-                # Place the label at the top of the bar
-                ax.text(
-                    patch.get_x() + patch.get_width() / 2,  # x-coordinate
-                    height + 0.5,  # y-coordinate (slightly above the bar)
-                    f'{int(height)}',  # Text to display (integer count)
-                    ha='center', va='center', fontsize=9, color='black'
-                )
-
-    # Remove unused axes
-    for i in range(num_features, len(axes)):
-        fig.delaxes(axes[i])
-
-    # Adjust layout
-    plt.tight_layout()
-    plt.show()
-
-
-
 def plot_numerical_distributions(df, numerical_features):
     """
     Plot distribution charts for numerical features using subplots.
@@ -83,6 +36,53 @@ def plot_numerical_distributions(df, numerical_features):
     plt.tight_layout()
     plt.show()
 
+def plot_categorical_distributions_and_boxplots(df, categorical_features, target_feature):
+    """
+    Plot subplots for categorical features showing both distribution (countplot) and 
+    relationships with a continuous target variable (boxplot).
+
+    Parameters:
+        df (pd.DataFrame): DataFrame containing the categorical variables and target variable.
+        categorical_features (list): List of column names for the categorical variables.
+        target_feature (str): Name of the continuous target feature for the boxplot.
+    """
+    # Define the number of rows and columns for the subplots
+    num_features = len(categorical_features)
+    cols = 2  # One column for countplot, one for boxplot
+    rows = num_features  # Each row corresponds to one categorical feature
+    
+    # Create the subplot grid
+    fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
+    
+    # Plot each categorical feature
+    for i, feature in enumerate(categorical_features):
+        # Countplot on the left
+        sns.countplot(data=df, x=feature, hue=feature ,palette="Set2", ax=axes[i, 0],legend=False)
+        axes[i, 0].set_title(f"Distribution of {feature}", fontsize=12)
+        axes[i, 0].set_xlabel(feature, fontsize=10)
+        axes[i, 0].set_ylabel("Count", fontsize=10)
+        axes[i, 0].tick_params(axis='x', rotation=45)
+
+        # Add count labels on the countplot
+        for patch in axes[i, 0].patches:
+            height = patch.get_height()  # Get the height of the bar
+            if height > 0:
+                axes[i, 0].text(
+                    patch.get_x() + patch.get_width() / 2,  # x-coordinate
+                    height + 0.5,  # y-coordinate (slightly above the bar)
+                    f'{int(height)}',  # Text to display (integer count)
+                    ha='center', va='center', fontsize=9, color='black'
+                )
+
+        # Boxplot on the right
+        sns.boxplot(x=feature, y=target_feature,hue=feature , data=df, palette="Set3", ax=axes[i, 1],legend=False)
+        axes[i, 1].set_title(f"{target_feature} by {feature}", fontsize=12)
+        axes[i, 1].set_xlabel(feature, fontsize=10)
+        axes[i, 1].set_ylabel(target_feature, fontsize=10)
+
+    # Adjust layout
+    plt.tight_layout()
+    plt.show()
 
 def plot_month_hour_distribution(data):
     """

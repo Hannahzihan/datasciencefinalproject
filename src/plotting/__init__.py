@@ -1,3 +1,3 @@
-from ._exploratory_plotting import plot_categorical_distributions, plot_numerical_distributions, plot_month_hour_distribution
+from ._exploratory_plotting import plot_categorical_distributions_and_boxplots, plot_numerical_distributions, plot_month_hour_distribution
 
-__all__ = ["plot_categorical_distributions","plot_numerical_distributions","plot_month_hour_distribution"]
+__all__ = ["plot_categorical_distributions_and_boxplots","plot_numerical_distributions","plot_month_hour_distribution"]
