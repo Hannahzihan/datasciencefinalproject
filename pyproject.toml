@@ -41,6 +41,9 @@ wrap-descriptions = 88
 wrap-summaries = 88
 
 [tool.pytest.ini_options]
-# This will be pytest's future default.
-addopts = "--import-mode=importlib --cov=ps3"
-pythonpath="."
+addopts = "--cov=src/feature_engineering --cov-report=html"
+pythonpath = "."
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning"
+]
