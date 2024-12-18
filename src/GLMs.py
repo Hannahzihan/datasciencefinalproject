@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 from glum import GeneralizedLinearRegressor, TweedieDistribution
+from lightgbm import LGBMRegressor
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import train_test_split, GridSearchCV, KFold
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, KFold
 from sklearn.metrics import make_scorer
-
 # =======================
 # 1️⃣ Load and Preprocess Data
 # =======================
@@ -17,21 +17,17 @@ input_filepath = r"D:\24fall\DS_Project\src\data\cleaned_dataset.parquet"
 df = pd.read_parquet(input_filepath)
 
 # Create a binary feature 'RainOrSnow' which is 1 if either Rainfall or Snowfall is non-zero
-df['RainOrSnow'] = ((df['Snowfall'] > 0) | (df['Rainfall'] > 0)).astype(int)
+df['rain_snow'] = ((df['snow'] > 0) | (df['rain'] > 0)).astype(int)
 
 # Additional feature engineering
 # Divide Solar Radiation and Visibility into three categories: low, medium, high
 # Define manual thresholds for Solar Radiation and Visibility
-solar_thresholds = [0, 0.1, 1.5, df['Solar Radiation'].max()]  # Customize these thresholds
-visibility_thresholds = [0, 500, 1900, df['Visibility'].max()]  # Customize these thresholds
-
+solar_thresholds = [df['sol_rad'].min()-0.01, 0.1, 1.5, df['sol_rad'].max() + 0.001]
+visibility_thresholds = [df['visib'].min()-0.01, 500, 1900, df['visib'].max() + 0.001]
 # Use pd.cut() to categorize Solar Radiation and Visibility
-df['SolarRadiation_Level'] = pd.cut(df['Solar Radiation'], bins=solar_thresholds, labels=['Low', 'Medium', 'High'])
-df['Visibility_Level'] = pd.cut(df['Visibility'], bins=visibility_thresholds, labels=['Low', 'Medium', 'High'])
+df['sol_rad_level'] = pd.cut(df['sol_rad'], bins=solar_thresholds, labels=['Low', 'Medium', 'High'])
+df['visib_level'] = pd.cut(df['visib'], bins=visibility_thresholds, labels=['Low', 'Medium', 'High'])
 
-df['Log_Windspeed'] = np.log1p(df['Wind speed'])  # Log transform if skewed
-
-df['Hour'] = df['Hour'].astype(str)
 # Split the dataset into training and testing sets (75% train, 25% test)
 df_train, df_test = train_test_split(df, test_size=0.25, random_state=42)
 
@@ -39,29 +35,30 @@ df_train, df_test = train_test_split(df, test_size=0.25, random_state=42)
 # 2️⃣ Define Features and Target Variables
 # =======================
 
-target = "Rented Bike Count"  # Target variable
+target = "bike_cnt"  # Target variable
 
 # Categorical and numerical features used for model training
 categoricals = [
-    'Hour',
-    'Seasons', 
-    'SolarRadiation_Level',
-    'Visibility_Level',
-    'Month', 
-    "Day of Week",
-    'Holiday', 
-    'Week Status'
+    'hour',
+    'season', 
+    'sol_rad_level',
+    'visib_level',
+    'month', 
+    "day_of_week",
+    'holiday', 
+    'week_status'
     ]
 
 numericals = [
-    # 'Hour',
-    "Temperature",
-    "Humidity",
-    # "Log_Visibility",
-    # "Log_SolarRadiation",
-    "RainOrSnow",
-    #"Dew Point Temperature"
-    #"Log_Windspeed",
+    "temp",
+    "hum",
+    # "visib",
+    # "sol_rad",
+    # "rain",
+    # "snow",
+    "rain_snow",
+    #"dew_temp"
+    #"log_wspd",
 ]
 
 # Combine all predictors
